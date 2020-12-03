@@ -76,7 +76,7 @@ const SubComponent = ({ noData, status, children }) => {
   }
 }
 
-const GoodsSearch = (props) => {
+const GoodsSearch = ({goodsQuery,goodsQueryFromRedux}) => {
   const [status, setStatus] = React.useState("idle")
 
   const onChange = (e) => {
@@ -89,7 +89,8 @@ const GoodsSearch = (props) => {
         },
       ]),
     }).then((r) => {
-      props.goodsQuery(r.GoodFind)
+      console.log(r)
+      goodsQuery(r.GoodFind)
       setStatus("resolved")
     })
   }
@@ -108,10 +109,10 @@ const GoodsSearch = (props) => {
           <input className="form-control" type="search" onChange={onChange} />
         </div>
         <SubComponent
-          noData={props.goodsQueryFromRedux !== null && props.goodsQueryFromRedux.length === 0}
+          noData={goodsQueryFromRedux !== null && goodsQueryFromRedux.length === 0}
           status={status}
         >
-          <div>{props.goodsQueryFromRedux}</div>
+          <div>{goodsQueryFromRedux}</div>
         </SubComponent>
       </div>
     </div>

@@ -8,10 +8,26 @@ export const ENDPOINT_GRAPHQL = `${ENDPOINT}/graphql`;
 
 export const client = new GraphQLClient(ENDPOINT_GRAPHQL);
 
-const token = localStorage.getItem("token");
-if (token !== null) {
-  console.log("token", token);
-  client.setHeader("Authorization", `Bearer ${localStorage.getItem("token")}`);
+// const token = localStorage.getItem("token");
+
+// if (token) {
+//   client.setHeader("Authorization", `Bearer ${localStorage.getItem("token")}`);
+// }
+
+export const myFetch = async (query, variables) => {
+  const response = await fetch(ENDPOINT_GRAPHQL, {
+    method: "POST",
+    body: JSON.stringify({
+      query,
+      variables
+    }),
+    headers: {
+      "content-type": "application/json"
+    }
+  });
+  const { data } = await response.json();
+  return data;
 }
+
 
 export default client;

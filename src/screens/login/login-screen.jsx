@@ -1,12 +1,13 @@
-import React from "react";
-import Toggle from "react-toggle";
-import { Redirect } from "react-router-dom";
-import "react-toggle/style.css";
-import API from "./../../API";
-import { gql } from "graphql-request";
-import { connect } from "react-redux";
-import Spinner from "../../shared/components/spinner";
-import { login } from "./../../services/auth";
+import React from "react"
+import Toggle from "react-toggle"
+import { Redirect } from "react-router-dom"
+import "react-toggle/style.css"
+import API from "./../../API"
+import { gql } from "graphql-request"
+import { connect } from "react-redux"
+import Spinner from "../../shared/components/spinner"
+import { login } from "./../../services/auth"
+
 const createMutation = gql`
   mutation create($login: String!, $password: String!, $nick: String!) {
     UserUpsert(user: { login: $login, password: $password, nick: $nick }) {
@@ -14,21 +15,21 @@ const createMutation = gql`
       nick
     }
   }
-`;
+`
 const CreateUserForm = () => {
-  const [values, setValues] = React.useState({});
+  const [values, setValues] = React.useState({})
   const onSubmit = (e) => {
-    e.preventDefault();
-    API.request(createMutation, values).then(console.log);
-  };
+    e.preventDefault()
+    API.request(createMutation, values).then(console.log)
+  }
 
   const onChange = (e) => {
-    const target = e.target;
+    const target = e.target
     setValues((prev) => ({
       ...prev,
-      [target.name]: target.value
-    }));
-  };
+      [target.name]: target.value,
+    }))
+  }
   return (
     <form onSubmit={onSubmit}>
       <div className="form-group row">
@@ -36,7 +37,7 @@ const CreateUserForm = () => {
         <div className="col-sm-10">
           <input
             type="text"
-            class="form-control"
+            className="form-control"
             placeholder="Login"
             name="login"
             onChange={onChange}
@@ -44,7 +45,7 @@ const CreateUserForm = () => {
         </div>
       </div>
       <div className="form-group row">
-        <label class="col-sm-2 col-form-label">Nick</label>
+        <label className="col-sm-2 col-form-label">Nick</label>
         <div className="col-sm-10">
           <input
             type="text"
@@ -56,7 +57,7 @@ const CreateUserForm = () => {
         </div>
       </div>
       <div className="form-group row">
-        <label class="col-sm-2 col-form-label">Password</label>
+        <label className="col-sm-2 col-form-label">Password</label>
         <div className="col-sm-10">
           <input
             type="password"
@@ -69,23 +70,35 @@ const CreateUserForm = () => {
       </div>
       <button className="btn btn-primary">Create</button>
     </form>
-  );
-};
+  )
+}
 
 const LoginForm = ({ dispatch }) => {
-  const [values, setValues] = React.useState({});
+  const [values, setValues] = React.useState({})
+
   const onSubmit = (e) => {
-    e.preventDefault();
-    dispatch(login(values));
-  };
+    e.preventDefault()
+      const target = e.target
+      if (
+        target.children[0].lastChild.name === "login" &&
+        target.children[0].lastChild.value === "admin" &&
+        target.children[1].lastChild.name === "password" &&
+        target.children[1].lastChild.value === "123"
+      ) {
+        dispatch(login(values))
+      } else {
+        dispatch({type: "login/rejected"})
+      }
+  }
 
   const onChange = (e) => {
-    const target = e.target;
+    const target = e.target
+
     setValues((prev) => ({
       ...prev,
-      [target.name]: target.value
-    }));
-  };
+      [target.name]: target.value,
+    }))
+  }
   return (
     <form onSubmit={onSubmit}>
       <div className="form-group">
@@ -113,20 +126,20 @@ const LoginForm = ({ dispatch }) => {
         Create
       </button>
     </form>
-  );
-};
+  )
+}
 
 const Login = ({ dispatch, authStatus }) => {
-  const [isNewUser, setNewUser] = React.useState(true);
+  const [isNewUser, setNewUser] = React.useState(true)
 
   if (authStatus === "resolved") {
-    return <Redirect to="/" />;
+    return <Redirect to="/" />
   }
   return (
     <div>
       <div className="d-flex align-items-center justify-content-center">
         <h1>{isNewUser ? "Login" : "Registration"} </h1>
-        <Toggle checked={isNewUser} onChange={(e) => setNewUser((p) => !p)} />
+        <Toggle checked={isNewUser} onChange={() => setNewUser((p) => !p)} />
       </div>
       <div className="col-sm-12 col-md-5 mx-auto">
         {isNewUser ? <LoginForm dispatch={dispatch} /> : <CreateUserForm />}
@@ -136,15 +149,15 @@ const Login = ({ dispatch, authStatus }) => {
       </div>
       <div className="mt-2">
         {authStatus === "rejected" ? (
-          <span className="text-danger">Something went wrong</span>
+          <span className="text-danger">Login and password is incorrect!</span>
         ) : null}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const mapStateToProps = (state) => ({
   isLoggedIn: state.auth.isLoggedIn,
-  authStatus: state.auth.status
-});
-export default connect(mapStateToProps)(Login);
+  authStatus: state.auth.status,
+})
+export default connect(mapStateToProps)(Login)

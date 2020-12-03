@@ -1,7 +1,20 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { connect } from "react-redux"
+import { Link } from "react-router-dom"
+import { bindActionCreators } from "redux"
 
-const NavBar = () => {
+
+const Logout = ({logout}) => {
+  const handleLogout =()=> {
+    localStorage.removeItem("token")
+    logout()
+  } 
+  
+  return <button onClick={handleLogout}>logout</button>
+}
+
+const NavBar = ({isLoginTrue,logoutToProps}) => {
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="collapse navbar-collapse" id="navbarNav">
@@ -21,10 +34,23 @@ const NavBar = () => {
               Search Goods
             </Link>
           </li>
+          <li className="nav-item">{isLoginTrue && <Logout logout={logoutToProps}/>}</li>
         </ul>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default NavBar;
+const mapStateToProps = (state) => ({
+  isLoginTrue: state.auth.isLoggedIn,
+})
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      logoutToProps: () => ({ type: "logout" }),
+    },
+    dispatch
+  )
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar)

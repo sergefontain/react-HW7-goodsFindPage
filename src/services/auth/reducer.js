@@ -1,30 +1,36 @@
 const initialState = {
   isLoggedIn: !!localStorage.getItem("token"),
-  status: "idle"
-};
+  status: "idle",
+}
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case "login/pending":
       return {
         ...state,
-        status: "pending"
-      };
+        status: "pending",
+      }
     case "login/resolved":
       return {
         ...state,
+        status: "resolved",
         isLoggedIn: true,
-        status: "resolved"
-      };
+      }
     case "login/rejected":
       return {
         ...state,
         status: "rejected",
-        isLoggedIn: false
-      };
+        isLoggedIn: false,
+      }
+    case "logout":
+      return {
+        ...state,
+        status: "logged out",
+        isLoggedIn: false,
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default authReducer;
+export default authReducer
